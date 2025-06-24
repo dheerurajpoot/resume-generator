@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Navigation } from "@/components/navigation";
+import { Footer } from "@/components/footer";
 
 export const metadata: Metadata = {
 	title: "Resume Generator",
@@ -17,7 +19,11 @@ export default function RootLayout({
 			<head suppressHydrationWarning>
 				{/* google Search Console code */}
 			</head>
-			<body suppressHydrationWarning>{children}</body>
+			<body suppressHydrationWarning>
+				<Navigation />
+				{children}
+				<Footer />
+			</body>
 		</html>
 	);
 }

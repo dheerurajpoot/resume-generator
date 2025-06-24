@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import { Navigation } from "@/components/navigation";
-import { Footer } from "@/components/footer";
 import { ContactForm } from "@/components/contact-form";
 import { Card, CardContent } from "@/components/ui/card";
 import { Mail, MessageSquare, Clock, MapPin } from "lucide-react";
@@ -16,8 +14,6 @@ export const metadata: Metadata = {
 export default function Contact() {
 	return (
 		<div className='min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50'>
-			<Navigation />
-
 			<main className='py-20 px-4'>
 				<div className='max-w-6xl mx-auto'>
 					{/* Hero Section */}
@@ -128,8 +124,6 @@ export default function Contact() {
 					</div>
 				</div>
 			</main>
-
-			<Footer />
 		</div>
 	);
 }

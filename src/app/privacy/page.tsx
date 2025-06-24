@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import { Navigation } from "@/components/navigation";
-import { Footer } from "@/components/footer";
 import { Card, CardContent } from "@/components/ui/card";
 
 export const metadata: Metadata = {
@@ -14,8 +12,6 @@ export const metadata: Metadata = {
 export default function Privacy() {
 	return (
 		<div className='min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50'>
-			<Navigation />
-
 			<main className='py-20 px-4'>
 				<div className='max-w-4xl mx-auto'>
 					<div className='text-center mb-12'>
@@ -313,8 +309,6 @@ export default function Privacy() {
 					</Card>
 				</div>
 			</main>
-
-			<Footer />
 		</div>
 	);
 }

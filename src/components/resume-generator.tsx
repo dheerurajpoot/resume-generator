@@ -8,12 +8,6 @@ import { Download, Eye, Edit } from "lucide-react";
 import { TemplateShowcase } from "./template-showcase";
 import { HomeSections } from "./home-sections";
 
-let html2pdf: any;
-
-if (typeof window !== "undefined") {
-	html2pdf = require("html2pdf.js");
-}
-
 export interface ResumeData {
 	personalInfo: {
 		fullName: string;
@@ -75,6 +69,24 @@ const initialData: ResumeData = {
 	projects: [],
 };
 
+// Utility to replace oklch() colors with supported hex colors
+function replaceOklchColors(element: HTMLElement) {
+	const elements = element.querySelectorAll("*");
+	elements.forEach((el) => {
+		const style = window.getComputedStyle(el);
+		["color", "backgroundColor", "borderColor"].forEach((prop) => {
+			const value = style[prop as any];
+			if (typeof value === "string" && value.startsWith("oklch")) {
+				if (prop === "backgroundColor") {
+					(el as HTMLElement).style.backgroundColor = "#fff";
+				} else {
+					(el as HTMLElement).style[prop as any] = "#000";
+				}
+			}
+		});
+	});
+}
+
 export function ResumeGenerator() {
 	const [resumeData, setResumeData] = useState<ResumeData>(initialData);
 	const [currentView, setCurrentView] = useState<"form" | "preview">("form");
@@ -110,6 +122,10 @@ export function ResumeGenerator() {
 		}
 
 		try {
+			// Replace oklch() colors with supported colors before PDF generation
+			replaceOklchColors(element as HTMLElement);
+
+			const html2pdf = (await import("html2pdf.js")).default;
 			// Configure html2pdf options
 			const opt = {
 				margin: [0.5, 0.5, 0.5, 0.5],
@@ -135,96 +151,7 @@ export function ResumeGenerator() {
 			await html2pdf().set(opt).from(element).save();
 		} catch (error) {
 			console.error("Error generating PDF:", error);
-			// Fallback to print method if html2pdf fails
-			handlePrintFallback();
 		}
-	};
-
-	const handlePrintFallback = () => {
-		// Create a new window for printing as fallback
-		const printWindow = window.open("", "_blank");
-		if (!printWindow) return;
-
-		// Get the resume content
-		const resumeContent = document.getElementById("resume-preview");
-		if (!resumeContent) return;
-
-		// Create the print document with better styling
-		printWindow.document.write(`
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <title>Resume - ${resumeData.personalInfo.fullName || "Resume"}</title>
-        <style>
-          * { margin: 0; padding: 0; box-sizing: border-box; }
-          body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.4;
-            color: #000;
-            background: white;
-            font-size: 12pt;
-          }
-          .resume-content { 
-            max-width: 800px; 
-            margin: 0 auto; 
-            padding: 0.5in;
-          }
-          h1 { font-size: 20pt; font-weight: bold; margin-bottom: 8pt; }
-          h2 { font-size: 14pt; font-weight: bold; margin: 12pt 0 6pt 0; }
-          h3 { font-size: 12pt; font-weight: bold; margin: 6pt 0 3pt 0; }
-          p, li { font-size: 11pt; margin-bottom: 3pt; line-height: 1.3; }
-          ul { margin-left: 18pt; }
-          .text-blue-600 { color: #2563eb !important; }
-          .text-slate-800 { color: #1e293b !important; }
-          .bg-slate-800 { background-color: #1e293b !important; color: white !important; }
-          .border-b-2 { border-bottom: 2px solid #2563eb !important; padding-bottom: 2pt; }
-          .border-b { border-bottom: 1px solid #64748b !important; }
-          .space-y-1 > * + * { margin-top: 3pt; }
-          .space-y-2 > * + * { margin-top: 6pt; }
-          .space-y-4 > * + * { margin-top: 12pt; }
-          .mb-8 { margin-bottom: 16pt; }
-          .mb-6 { margin-bottom: 12pt; }
-          .mb-4 { margin-bottom: 8pt; }
-          .mb-3 { margin-bottom: 6pt; }
-          .mb-2 { margin-bottom: 4pt; }
-          .mt-3 { margin-top: 6pt; }
-          .ml-4 { margin-left: 12pt; }
-          .p-8 { padding: 16pt; }
-          .flex { display: flex; }
-          .justify-between { justify-content: space-between; }
-          .items-start { align-items: flex-start; }
-          .items-center { align-items: center; }
-          .w-1\\/3 { width: 33.333%; }
-          .w-2\\/3 { width: 66.667%; }
-          .min-h-\\[800px\\] { min-height: 600pt; }
-          .break-all { word-break: break-all; }
-          .leading-tight { line-height: 1.2; }
-          .leading-relaxed { line-height: 1.4; }
-          .text-justify { text-align: justify; }
-          .uppercase { text-transform: uppercase; }
-          .tracking-wide { letter-spacing: 0.05em; }
-          @page { margin: 0.5in; size: A4; }
-          @media print {
-            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .bg-slate-800 { background-color: #1e293b !important; }
-          }
-        </style>
-      </head>
-      <body>
-        <div class="resume-content">
-          ${resumeContent.innerHTML}
-        </div>
-      </body>
-    </html>
-  `);
-
-		printWindow.document.close();
-
-		// Wait for content to load then print
-		setTimeout(() => {
-			printWindow.print();
-			printWindow.close();
-		}, 500);
 	};
 
 	return (
@@ -316,7 +243,7 @@ export function ResumeGenerator() {
 									? "block"
 									: "hidden lg:block"
 							}`}>
-							<div className='sticky top-24' id='resume-preview'>
+							<div className='sticky top-24'>
 								<div className='flex justify-between items-center mb-4'>
 									<h2 className='text-2xl font-bold text-gray-800'>
 										Resume Preview
