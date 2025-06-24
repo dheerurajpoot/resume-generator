@@ -245,7 +245,7 @@ export default function Privacy() {
 								information.
 							</p>
 
-							<h2>10. Children's Privacy</h2>
+							<h2>10. Children&apos;s Privacy</h2>
 							<p>
 								ResumeGen is not intended for children under the
 								age of 13. We do not knowingly collect personal
@@ -302,7 +302,8 @@ export default function Privacy() {
 									are committed to transparency and protecting
 									your personal information. If you have any
 									concerns about how we handle your data,
-									please don't hesitate to reach out to us.
+									please don&apos;t hesitate to reach out to
+									us.
 								</div>
 							</div>
 						</CardContent>

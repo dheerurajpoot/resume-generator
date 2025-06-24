@@ -239,7 +239,7 @@ export function HomeSections() {
 										)}
 									</div>
 									<p className='text-gray-700 mb-6 italic'>
-										"{testimonial.content}"
+										&quot;{testimonial.content}&quot;
 									</p>
 									<div>
 										<div className='font-semibold text-gray-900'>

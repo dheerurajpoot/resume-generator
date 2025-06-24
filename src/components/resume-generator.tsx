@@ -70,20 +70,24 @@ const initialData: ResumeData = {
 };
 
 // Utility to replace oklch() colors with supported hex colors
+
+type ColorProp = "color" | "backgroundColor" | "borderColor";
 function replaceOklchColors(element: HTMLElement) {
 	const elements = element.querySelectorAll("*");
 	elements.forEach((el) => {
 		const style = window.getComputedStyle(el);
-		["color", "backgroundColor", "borderColor"].forEach((prop) => {
-			const value = style[prop as any];
-			if (typeof value === "string" && value.startsWith("oklch")) {
-				if (prop === "backgroundColor") {
-					(el as HTMLElement).style.backgroundColor = "#fff";
-				} else {
-					(el as HTMLElement).style[prop as any] = "#000";
+		(["color", "backgroundColor", "borderColor"] as ColorProp[]).forEach(
+			(prop) => {
+				const value = style[prop];
+				if (typeof value === "string" && value.startsWith("oklch")) {
+					if (prop === "backgroundColor") {
+						(el as HTMLElement).style.backgroundColor = "#fff";
+					} else if (prop === "color" || prop === "borderColor") {
+						(el as HTMLElement).style[prop] = "#000";
+					}
 				}
 			}
-		});
+		);
 	});
 }
 
