@@ -115,7 +115,7 @@ export function ResumeGenerator() {
 	const handleDownload = async () => {
 		if (typeof window === "undefined") return;
 
-		const element = document.getElementById("resume-preview");
+		const element = document.getElementById("resume-preview-content");
 		if (!element) {
 			console.error("Resume preview element not found");
 			return;
@@ -126,18 +126,18 @@ export function ResumeGenerator() {
 			replaceOklchColors(element as HTMLElement);
 
 			const html2pdf = (await import("html2pdf.js")).default;
-			// Configure html2pdf options
 			const opt = {
-				margin: [0.5, 0.5, 0.5, 0.5],
+				margin: [0.2, 0.2, 0.2, 0.2],
 				filename: `${
 					resumeData.personalInfo.fullName || "Resume"
 				}_Resume.pdf`,
-				image: { type: "jpeg", quality: 0.98 },
+				image: { type: "jpeg", quality: 1 },
 				html2canvas: {
-					scale: 2,
+					scale: 3,
 					useCORS: true,
 					letterRendering: true,
 					allowTaint: false,
+					backgroundColor: "#fff",
 				},
 				jsPDF: {
 					unit: "in",
@@ -147,7 +147,6 @@ export function ResumeGenerator() {
 				},
 			};
 
-			// Generate and download PDF
 			await html2pdf().set(opt).from(element).save();
 		} catch (error) {
 			console.error("Error generating PDF:", error);
@@ -255,10 +254,15 @@ export function ResumeGenerator() {
 										Download PDF
 									</Button>
 								</div>
-								<ResumePreview
-									data={resumeData}
-									template={selectedTemplate}
-								/>
+								{/* Only this content will be captured for PDF */}
+								<div
+									id='resume-preview-content'
+									className='resume-pdf'>
+									<ResumePreview
+										data={resumeData}
+										template={selectedTemplate}
+									/>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -270,3 +274,5 @@ export function ResumeGenerator() {
 		</div>
 	);
 }
+
+// TIP: For even better print/PDF fidelity, consider adding a print stylesheet in globals.css targeting .resume-pdf and @media print.
