@@ -14,7 +14,10 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en'>
-			<body>{children}</body>
+			<head suppressHydrationWarning>
+				{/* google Search Console code */}
+			</head>
+			<body suppressHydrationWarning>{children}</body>
 		</html>
 	);
 }
